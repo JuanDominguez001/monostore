@@ -3,6 +3,12 @@ from .models import Categoria, Marca, Producto, Inventario
 from .serializers import CategoriaSerializer, MarcaSerializer, ProductoSerializer, InventarioSerializer
 
 
+class IsAdminOrReadOnly(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:  # GET/HEAD/OPTIONS
+            return True
+        return request.user and request.user.is_staff
+
 class CategoriaViewSet(viewsets.ModelViewSet):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer

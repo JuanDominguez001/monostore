@@ -1,0 +1,169 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Monostore — todo verde, todo bien</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container row">
+    <a id="nav-home" class="logo" href="#/home" aria-label="Monostore Home">
+      <svg width="40" height="40" viewBox="0 0 128 128"><use href="#logo-mono"/></svg>
+      <div class="brand">Monostore</div>
+    </a>
+    <div class="searchbox">
+      <form>
+        <input id="q" type="search" placeholder="Buscar productos...">
+        <button type="submit">Buscar</button>
+      </form>
+    </div>
+    <div class="header-actions">
+      <span id="chip-api" class="badge warn">API: desconocida</span>
+      <span id="chip-auth" class="badge warn">Auth: invitado</span>
+      <a class="link" id="nav-catalogo" href="#/catalogo">Catálogo</a>
+      <a class="link" href="#/perfil">Cuenta 👤</a>
+      <a class="link" href="#/perfil">Pedidos 📦</a>
+      <a class="link cart" id="nav-carrito" href="#/carrito">Carrito 🛒 <span id="cart-count" class="count">0</span></a>
+      <a class="link hidden" id="nav-admin" href="#/admin">Admin</a>
+    </div>
+  </div>
+  <div class="subnav">
+    <div class="container row"><!-- chips inserted here --></div>
+  </div>
+  <div class="container breadcrumbs"></div>
+</header>
+
+<main class="container">
+  <!-- HOME -->
+  <section class="hero" data-view="home">
+    <div class="wrap">
+      <div>
+        <div class="logo" style="gap:8px">
+          <svg width="44" height="44" viewBox="0 0 128 128"><use href="#logo-mono"/></svg>
+          <h1>Monostore — todo verde, todo bien</h1>
+        </div>
+        <p>Tu marketplace estilo Amazon/Mercado Libre, con aire fresco y tema verde. Explora las categorías, encuentra tus marcas favoritas y disfruta.</p>
+        <a class="cta" href="#/catalogo">Ver ofertas ›</a>
+      </div>
+      <div class="hero-svg">
+        <!-- Little monkey swinging on a vine -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480">
+          <defs>
+            <linearGradient id="vg" x1="0" x2="1"><stop offset="0" stop-color="#22c55e"/><stop offset="1" stop-color="#16a34a"/></linearGradient>
+            <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,.35)"/>
+            </filter>
+          </defs>
+          <rect x="0" y="0" width="640" height="480" fill="url(#vg)" opacity=".08"/>
+          <!-- vine -->
+          <path d="M580 0 C520 80 460 120 420 180 C380 240 360 320 300 420" stroke="#2fb36a" stroke-width="10" fill="none" stroke-linecap="round"/>
+          <!-- monkey body -->
+          <g filter="url(#shadow)">
+            <circle cx="360" cy="220" r="48" fill="#22c55e"/>
+            <circle cx="360" cy="210" r="28" fill="#1f6f3c"/>
+            <circle cx="348" cy="208" r="6" fill="#0a1410"/><circle cx="370" cy="208" r="6" fill="#0a1410"/>
+            <path d="M346,224 Q360,236 374,224" stroke="#0a1410" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M356 172 l 16 -24" stroke="#1ea65a" stroke-width="8" stroke-linecap="round"/>
+            <path d="M392 238 c 40 20 60 46 40 60" stroke="#1ea65a" stroke-width="8" fill="none" stroke-linecap="round"/>
+          </g>
+          <!-- leaves pattern -->
+          <g opacity=".25">
+            <use href="#leaf" x="80" y="60"/>
+            <use href="#leaf" x="160" y="30"/>
+            <use href="#leaf" x="220" y="80"/>
+          </g>
+          <symbol id="leaf" viewBox="0 0 128 128">
+            <path d="M64 8 C72 24 96 40 112 64 C92 68 76 80 64 96 C52 80 36 68 16 64 C32 40 56 24 64 8Z" fill="#105d35"/>
+            <path d="M64 8 C60 24 60 44 64 96" stroke="#1ea65a" stroke-width="6" stroke-linecap="round"/>
+          </symbol>
+        </svg>
+      </div>
+    </div>
+    <div class="container section" id="home-sections">
+      <!-- Carouseles simples -->
+    </div>
+  </section>
+
+  <!-- CATÁLOGO -->
+  <section class="section" data-view="catalogo" hidden></section>
+
+  <!-- PRODUCTO -->
+  <section class="section" data-view="producto" hidden></section>
+
+  <!-- CARRITO -->
+  <section class="section" data-view="carrito" hidden></section>
+
+  <!-- CHECKOUT -->
+  <section class="section" data-view="checkout" hidden></section>
+
+  <!-- PERFIL -->
+  <section class="section" data-view="perfil" hidden></section>
+
+  <!-- ADMIN -->
+  <section class="section" data-view="admin" hidden></section>
+</main>
+
+<section id="reqlog" class="container">
+  <div class="card" style="padding:12px">
+    <div class="small">Log de requests (para depurar):</div>
+    <pre class="small"></pre>
+  </div>
+</section>
+
+<!-- SVG defs are injected by app.js as hidden <svg>. -->
+
+<script src="js/config.js"></script>
+<script src="js/http.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+<script src="js/pages/catalogo.js"></script>
+<script src="js/pages/producto.js"></script>
+<script src="js/pages/carrito.js"></script>
+<script src="js/pages/checkout.js"></script>
+<script src="js/pages/admin.js"></script>
+<script src="js/pages/perfil.js"></script>
+
+<script>
+  // Home section content: simple carousels (no external libs)
+  function cardMini(p){
+    const img = p.image_url ? `<img src="${p.image_url}" alt="">` : `<svg width="80" height="80" viewBox="0 0 128 128"><use href="#placeholder-leaf"/></svg>`;
+    return `<a class="card" href="#/producto?id=${p.id}"><div class="thumb">${img}</div><div class="body"><b>${p.nombre||p.name}</b><div class="price">$${(p.precio||p.price||0).toFixed(2)}</div></div></a>`;
+  }
+  function renderCarousel(title, list, mount){
+    const sec = document.createElement("div");
+    sec.className="section";
+    sec.innerHTML = `<h2>${title}</h2><div class="carousel"><div class="strip"></div><button class="nav left">‹</button><button class="nav right">›</button></div>`;
+    const strip = sec.querySelector(".strip");
+    list.forEach(p=>{
+      const card = document.createElement("div"); card.innerHTML = cardMini(p);
+      strip.appendChild(card.firstChild);
+    });
+    mount.appendChild(sec);
+    const stripEl = sec.querySelector(".strip");
+    sec.querySelector(".left").onclick = ()=> stripEl.scrollBy({left:-300, behavior:"smooth"});
+    sec.querySelector(".right").onclick = ()=> stripEl.scrollBy({left:300, behavior:"smooth"});
+  }
+
+  document.addEventListener("DOMContentLoaded", ()=>{
+    const mount = document.getElementById("home-sections");
+    // pick featured by category or random if backend lacks flags
+    const list = window.CONFIG.DEMO ? window.MONO_DEMO.products : [];
+    const cats = (window.CONFIG.DEMO? window.MONO_DEMO.categorias : []);
+    if(list.length){
+      cats.slice(0,2).forEach(c=> renderCarousel(c, list.filter(p=> p.categoria===c), mount));
+      // Más vendidos / Novedades (aleatorio)
+      const shuffled = [...list].sort(()=> Math.random()-0.5);
+      renderCarousel("Más vendidos", shuffled.slice(0,6), mount);
+      renderCarousel("Novedades", shuffled.slice(2,8), mount);
+    }else{
+      // In real backend scenario, you may fetch featured endpoints here.
+    }
+  });
+</script>
+
+</body>
+</html>

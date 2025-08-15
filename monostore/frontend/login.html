@@ -1,0 +1,128 @@
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Monostore — Login</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-head">
+        <svg width="48" height="48" viewBox="0 0 128 128"><use href="#logo-mono"/></svg>
+        <div>
+          <div class="brand" style="font-size:1.4rem">Monostore</div>
+          <div class="small">todo verde, todo bien</div>
+        </div>
+      </div>
+      <div>
+        <label class="small">Usuario o Email</label>
+        <input id="user" class="input" placeholder="usuario o email">
+      </div>
+      <div style="margin-top:10px">
+        <label class="small">Contraseña</label>
+        <input id="pass" class="input" type="password" placeholder="••••••••">
+      </div>
+      <div style="display:flex; gap:8px; margin-top:12px">
+        <button class="btn" id="login">Entrar</button>
+        <button class="btn alt" id="toapp">Entrar como invitado</button>
+      </div>
+      <div class="settings">
+        <div>
+          <div class="small">BASE_URL API</div>
+          <input id="base" class="input" placeholder="http://localhost:8000/api">
+          <div style="display:flex; gap:8px; margin-top:8px">
+            <button class="btn ghost" id="probe">Probar conexión</button>
+            <span id="chip-api" class="badge warn">API: desconocida</span>
+          </div>
+        </div>
+      </div>
+      <div id="msg" class="small" style="margin-top:8px"></div>
+    </div>
+  </div>
+
+  <!-- inline defs for svg (logo + placeholder) -->
+  <svg style="position:absolute;width:0;height:0;overflow:hidden">
+    <symbol id="logo-mono" viewBox="0 0 128 128">
+      <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#22c55e"/><stop offset="1" stop-color="#16a34a"/>
+      </linearGradient></defs>
+      <circle cx="64" cy="68" r="38" fill="url(#g1)"/>
+      <circle cx="32" cy="68" r="12" fill="#1f6f3c"/><circle cx="96" cy="68" r="12" fill="#1f6f3c"/>
+      <circle cx="52" cy="64" r="5" fill="#0a1410"/><circle cx="76" cy="64" r="5" fill="#0a1410"/>
+      <path d="M48,82 Q64,94 80,82" stroke="#0a1410" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M64 20 C54 26 48 36 46 48 C52 42 60 40 64 40 C68 40 76 42 82 48 C80 36 74 26 64 20Z" fill="#22c55e" stroke="#128c42" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M64 14 C58 18 50 24 48 34 C52 30 60 28 64 28 C68 28 76 30 80 34 C78 24 70 18 64 14Z" fill="#1fb35a" stroke="#128c42" stroke-width="2" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="placeholder-leaf" viewBox="0 0 128 128">
+      <path d="M64 8 C72 24 96 40 112 64 C92 68 76 80 64 96 C52 80 36 68 16 64 C32 40 56 24 64 8Z" fill="#105d35"/>
+      <path d="M64 8 C60 24 60 44 64 96" stroke="#1ea65a" stroke-width="6" stroke-linecap="round"/>
+    </symbol>
+  </svg>
+  
+
+  <script src="js/config.js"></script>
+  <script src="js/http.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    const $ = (s,el=document)=> el.querySelector(s);
+
+    function setChip(state, cls){
+      const chip = document.getElementById("chip-api");
+      chip.textContent = "API: " + state;
+      chip.className = "badge " + (cls||"warn");
+    }
+
+    // Ping de conectividad: 401/403 cuentan como "API viva (requiere login)"
+    async function probeOnce() {
+      try {
+        await window.http.get("/productos/", {query:{limit:1}});
+        setChip("conectada","ok");
+        window.CONFIG.DEMO = false;
+      } catch(e){
+        const msg = String(e.message||"");
+        if (msg.includes("HTTP 401") || msg.includes("HTTP 403")) {
+          setChip("conectada (requiere login)","ok");
+          window.CONFIG.DEMO = false;     // ← NO activar demo si solo falta token
+        } else {
+          setChip("error","err");
+          window.CONFIG.DEMO = false;     // ← demo ya no se activa automático aquí
+        }
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", async ()=>{
+      $("#base").value = window.CONFIG.BASE_URL;
+      await probeOnce();
+
+      // Solo redirige si YA hay token. Nunca por DEMO.
+      if (window.CONFIG.ACCESS) { location.href = "app.html"; }
+    });
+
+    // Botón "Probar conexión"
+    $("#probe").onclick = async ()=>{
+      window.http.setBase($("#base").value.trim() || "http://localhost:8000/api");
+      await probeOnce();
+    };
+
+    // Botón "Entrar"
+    $("#login").onclick = async ()=>{
+      $("#msg").textContent = "Autenticando...";
+      try{
+        window.http.setBase($("#base").value.trim() || "http://localhost:8000/api");
+        await window.auth.login($("#user").value.trim(), $("#pass").value);
+        $("#msg").textContent = "OK. Redirigiendo...";
+        location.href = "app.html";
+      }catch(e){
+        $("#msg").textContent = "Error: " + e.message;
+      }
+    };
+
+    // Botón "Entrar como invitado" (ahora DEMO es decisión explícita)
+    $("#toapp").onclick = ()=>{
+      window.CONFIG.DEMO = true;
+      location.href = "app.html";
+    };
+  </script>
